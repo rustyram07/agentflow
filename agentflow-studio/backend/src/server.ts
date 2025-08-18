@@ -12,6 +12,7 @@ import deploymentRoutes from "./routes/deployments";
 import monitoringRoutes from "./routes/monitoring";
 import gcpRoutes from "./routes/gcp";
 import authRoutes from "./routes/auth";
+import orchestratorRoutes from "./routes/orchestrator";
 
 dotenv.config();
 
@@ -27,15 +28,15 @@ const limiter = rateLimit({
   legacyHeaders: false,
 });
 
-app.use(limiter);
-app.use(helmet());
+// app.use(limiter);
+// app.use(helmet());
 app.use(
   cors({
     origin: process.env.FRONTEND_URL || "http://localhost:3000",
     credentials: true,
   }),
 );
-app.use(morgan("combined"));
+// app.use(morgan("combined"));
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
@@ -48,6 +49,7 @@ app.use("/api/agents", agentRoutes);
 app.use("/api/deployments", deploymentRoutes);
 app.use("/api/monitoring", monitoringRoutes);
 app.use("/api/gcp", gcpRoutes);
+app.use("/api/orchestrator", orchestratorRoutes);
 
 app.get("/health", (_req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
@@ -57,7 +59,7 @@ app.use(errorHandler);
 
 async function startServer() {
   try {
-    await initializeDatabase();
+    // await initializeDatabase();
     app.listen(PORT, () => {
       console.log(`AgentFlow Studio Backend running on port ${PORT}`);
     });

@@ -47,7 +47,7 @@ const users: User[] = [
   {
     id: "1",
     email: "admin@agentflow.com",
-    password: "$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewfBXhdsUBo9K1vO", // password123
+    password: "$2b$12$7LOD0YucBmpGs6BNn5yiKuaqE7SfMiRR/yy/5U2P8CF15NaW7FwTa", // password123
     role: "admin",
     createdAt: new Date().toISOString(),
     isActive: true,
@@ -55,7 +55,7 @@ const users: User[] = [
   {
     id: "2",
     email: "developer@agentflow.com",
-    password: "$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewfBXhdsUBo9K1vO", // password123
+    password: "$2b$12$7LOD0YucBmpGs6BNn5yiKuaqE7SfMiRR/yy/5U2P8CF15NaW7FwTa", // password123
     role: "developer",
     createdAt: new Date().toISOString(),
     isActive: true,
@@ -64,13 +64,13 @@ const users: User[] = [
 
 export class AuthService {
   static generateToken(payload: Omit<TokenPayload, "iat" | "exp">): string {
-    return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+    return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN } as jwt.SignOptions);
   }
 
   static generateRefreshToken(
     payload: Omit<TokenPayload, "iat" | "exp">,
   ): string {
-    return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_REFRESH_EXPIRES_IN });
+    return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_REFRESH_EXPIRES_IN } as jwt.SignOptions);
   }
 
   static verifyToken(token: string): TokenPayload {

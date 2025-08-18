@@ -211,15 +211,121 @@ AgentFlow Studio integrates with your existing agentic framework through HTTP AP
 2. Review backend logs for API errors
 3. Ensure all services are running on correct ports
 
-## Production Deployment
+## Docker Deployment
 
-For production deployment:
+This project is fully containerized. You can use Docker and Docker Compose to build and run the application.
 
-1. **Build Frontend**: `npm run build` in frontend directory
-2. **Configure Environment**: Update .env files for production URLs
-3. **Database**: Consider using PostgreSQL instead of SQLite
-4. **Security**: Update JWT secrets and encryption keys
-5. **Monitoring**: Set up proper logging and monitoring
+### Prerequisites
+
+-   [Docker](https://docs.docker.com/get-docker/)
+-   [Docker Compose](https://docs.docker.com/compose/install/)
+
+### Building and Running
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/your-username/agentflow-studio.git
+    cd agentflow-studio
+    ```
+
+2.  **Run the application:**
+    ```bash
+    docker-compose up --build
+    ```
+
+This will build the Docker images for the frontend and backend and start the services.
+
+-   The frontend will be available at `http://localhost:3000`.
+-   The backend will be available at `http://localhost:3001`.
+
+## CI/CD
+
+This project uses GitHub Actions for Continuous Integration. The CI pipeline is defined in `.github/workflows/ci.yml`.
+
+The pipeline is triggered on every push or pull request to the `main` branch and performs the following steps:
+
+-   Builds the Docker image for the backend.
+-   Builds the Docker image for the frontend.
+
+This ensures that the application can be successfully built at all times.
+
+## Kubernetes Deployment
+
+You can deploy this application to a Kubernetes cluster using the provided manifest files in the `kubernetes` directory.
+
+### Prerequisites
+
+-   A running Kubernetes cluster.
+-   `kubectl` configured to connect to your cluster.
+-   An Ingress controller (like NGINX Ingress Controller) installed in your cluster.
+-   A Docker registry to host your images.
+
+### Deployment Steps
+
+1.  **Build and Push Docker Images:**
+
+    Build the Docker images for the frontend and backend and push them to your Docker registry.
+
+    ```bash
+    # Backend
+    docker build -t your-docker-registry/agentflow-backend:latest ./agentflow-studio/backend
+    docker push your-docker-registry/agentflow-backend:latest
+
+    # Frontend
+    docker build -t your-docker-registry/agentflow-frontend:latest ./agentflow-studio/frontend
+    docker push your-docker-registry/agentflow-frontend:latest
+    ```
+
+2.  **Update Kubernetes Manifests:**
+
+    In the `kubernetes` directory, update the `*-deployment.yaml` files to use the correct image names.
+
+3.  **Apply the Manifests:**
+
+    ```bash
+    kubectl apply -f kubernetes/
+    ```
+
+4.  **Access the Application:**
+
+    Once the Ingress is set up, you can access the application at the host you configured in `ingress.yaml` (e.g., `http://agentflow.example.com`).
+
+### Auto-scaling
+
+You can enable auto-scaling for the deployments by creating a `HorizontalPodAutoscaler` (HPA) resource for each deployment. For example, to auto-scale the backend based on CPU utilization, you can create the following HPA:
+
+```yaml
+# backend-hpa.yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: backend
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: backend
+  minReplicas: 2
+  maxReplicas: 5
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 80
+```
+
+You can apply this manifest in the same way as the other Kubernetes manifests.
+
+## Monitoring
+
+### Health Checks
+
+The application provides health check endpoints for monitoring:
+
+-   **Backend:** `GET /health` - Returns a JSON object with the status and timestamp.
+-   **Frontend:** `GET /health.html` - Returns a simple `OK` text response.
 
 ## Contributing
 
