@@ -2,7 +2,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-REPO_ROOT="/Users/ramamoorthysrinivasagam/Documents/aitax"
+REPO_ROOT="/Users/r/Documents/aitax"
 BRANCH="fix/codebase-issues-local"
 BACKEND_DIR="${REPO_ROOT}/agentflow-studio/backend"
 FRONTEND_DIR="${REPO_ROOT}/agentflow-studio/frontend"
